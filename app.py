@@ -1,35 +1,51 @@
 from PyQt5.QtWidgets import (
     QApplication, QWidget, QPushButton,
-    QLineEdit, QGridLayout
+    QLineEdit, QGridLayout, QSizePolicy
 )
+from PyQt5.QtGui import QFont
+
+
+my_font = QFont('Segoe UI', 18)
+
+
+class StretchButton(QPushButton):
+    def __init__(self, text):
+        super().__init__(text)
+        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.setMinimumSize(40, 40)
+        self.setFont(my_font)
+
+        
+
 class MainWindow(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle('Калькулятор')
 
+        self.to_solve = ''
+
         self.display = QLineEdit()
         self.display.setReadOnly(True)
 
-        btn_0 = QPushButton('0')
-        btn_1 = QPushButton('1')
-        btn_2 = QPushButton('2')
-        btn_3 = QPushButton('3')
-        btn_4 = QPushButton('4')
-        btn_5 = QPushButton('5')
-        btn_6 = QPushButton('6')
-        btn_7 = QPushButton('7')
-        btn_8 = QPushButton('8')
-        btn_9 = QPushButton('9')
-        btn_back = QPushButton('<-')
-        btn_clear = QPushButton('C')
-        btn_add = QPushButton('+')
-        btn_substract = QPushButton('-')
-        btn_multiply = QPushButton('*')
-        btn_divide = QPushButton('/')
-        btn_result = QPushButton('=')
-        btn_point = QPushButton('.')
-        self.display = QLineEdit()
-        self.display.setReadOnly(True)
+        btn_0 = StretchButton('0')
+        btn_1 = StretchButton('1')
+        btn_2 = StretchButton('2')
+        btn_3 = StretchButton('3')
+        btn_4 = StretchButton('4')
+        btn_5 = StretchButton('5')
+        btn_6 = StretchButton('6')
+        btn_7 = StretchButton('7')
+        btn_8 = StretchButton('8')
+        btn_9 = StretchButton('9')
+        btn_back = StretchButton('<-')
+        btn_clear = StretchButton('C')
+        btn_add = StretchButton('+')
+        btn_substract = StretchButton('-')
+        btn_multiply = StretchButton('*')
+        btn_divide = StretchButton('/')
+        btn_result = StretchButton('=')
+        btn_point = StretchButton('.')
+
         
         layout = QGridLayout()
         layout.addWidget(self.display, 0, 0, 1, 4)
@@ -61,8 +77,40 @@ class MainWindow(QWidget):
 
         self.setLayout(layout)
 
+        btn_0.clicked.connect(self.btn_handler)
+        btn_1.clicked.connect(self.btn_handler)
+        btn_2.clicked.connect(self.btn_handler)
+        btn_3.clicked.connect(self.btn_handler)
+        btn_4.clicked.connect(self.btn_handler)
+        btn_5.clicked.connect(self.btn_handler)
+        btn_6.clicked.connect(self.btn_handler)
+        btn_7.clicked.connect(self.btn_handler)
+        btn_8.clicked.connect(self.btn_handler)
+        btn_9.clicked.connect(self.btn_handler)
+        btn_divide.clicked.connect(self.btn_handler)
+        btn_multiply.clicked.connect(self.btn_handler)
+        btn_result.clicked.connect(self.btn_handler)
+        btn_add.clicked.connect(self.btn_handler)
+        btn_substract.clicked.connect(self.btn_handler)
+        btn_point.clicked.connect(self.btn_handler)
+        btn_back.clicked.connect(self.btn_handler)
+        btn_clear.clicked.connect(self.btn_handler)
 
 
+    def btn_handler(self):
+        btn = self.sender()
+        if btn.text() in '0123456789/*-+.':
+            self.to_solve += btn.text()
+        elif btn.text == '<-':
+            self.to_solve = self.to_solve[0:-1]
+        elif btn.text() == 'C':
+            self.to_solve = ''
+        elif btn.text() == '=':
+            try:
+                self.to_solve = str(eval(self.to_solve))
+            except:
+                self.to_solve = '0'
+        self.display.setText(self.to_solve)
 
 app = QApplication([])
 window = MainWindow()
